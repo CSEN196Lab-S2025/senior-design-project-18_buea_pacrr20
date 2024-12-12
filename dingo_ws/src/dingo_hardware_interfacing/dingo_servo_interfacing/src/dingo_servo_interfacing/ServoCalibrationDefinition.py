@@ -9,7 +9,7 @@ class motor_config():
     def __init__(self):
         self.pwm_max = 2400
         self.pwm_min = 370
-        self.kitF = ServoKit(channels=16) #Defininng a new set of servos uising the Adafruit ServoKit LIbrary
+        self.kitF = ServoKit(channels=16) #Defining a new set of servos uising the Adafruit ServoKit LIbrary
         self.kitB = ServoKit(channels=16, address=0x41) #Defininng a new set of servos uising the Adafruit ServoKit LIbrary
           
         #DefinING servo indices
@@ -48,6 +48,7 @@ class motor_config():
         self.right_leg_servo_list = [self.front_right_upper,self.front_right_lower,self.back_right_upper,self.back_right_lower]
         self.left_leg_servos_list = [ self.front_left_upper, self.front_left_lower,self.back_left_upper,self.back_left_lower]
         self.hip_opposite_list = [self.front_right_hip,self.back_left_hip]
+        self.hip_opposite_list2 = [self.front_left_hip,self.back_right_hip]
         
         # self.front_leg_servo_list = [self.front_right_upper,self.front_right_lower, self.front_left_upper, self.front_left_lower]
         # self.back_leg_servos_list = [self.back_left_upper,self.back_left_lower, self.back_right_upper,self.back_right_lower]
@@ -74,17 +75,27 @@ class motor_config():
                 print('The calibration angle for servo ',servo_number, ' is ', calibration_angle)
                 return
     def moveAbsAngle(self,servo_number,angle):
-        
+        if angle < 0:
+            angle = 0
+        if angle > 180:
+            angle = 180
         # Takes 180-angle so that the movement it the same as the right lef
         if servo_number in self.left_leg_servos_list:
             self.kitF.servo[servo_number].angle = 180 - angle
-            self.kitB.servo[servo_number].angle = 180 - angle           
+            self.kitB.servo[servo_number].angle = 180 - angle
+            #print("1")
         elif servo_number in self.hip_opposite_list: #corrects hip angle such that higher numbers are angles of elevation. Higher hip values fo all lift up
-            self.kitF.servo[servo_number].angle = 180 - angle
-            self.kitB.servo[servo_number].angle = 180 - angle   
+            self.kitF.servo[servo_number].angle = 180-angle
+            self.kitB.servo[servo_number].angle = 180-angle
+            #print("2")
+        elif servo_number in self.hip_opposite_list2:
+            self.kitF.servo[servo_number].angle = angle
+            self.kitB.servo[servo_number].angle = angle
+            #print("3")
         else:
             self.kitF.servo[servo_number].angle = angle
-            self.kitB.servo[servo_number].angle = angle   
+            self.kitB.servo[servo_number].angle = angle
+            #print("4")
     def relax_all_motors(self):
         """Relaxes desired servos so that they appear to be turned off. 
 

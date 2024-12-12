@@ -368,7 +368,7 @@ class AutoMove:
         self.py = 0.0    # Initial position in y direction
         self.pz = 0.0    # Initial position in z direction
 
-        self.pid = PID(1.0, 0.1, 0.05, setpoint=0)
+        self.pid = PID(1, 0.2, 0.01, setpoint=0)
         self.pid.output_limits = (-0.25, 0.25)
 
     def timeSleep(self, duration, dir="f"):

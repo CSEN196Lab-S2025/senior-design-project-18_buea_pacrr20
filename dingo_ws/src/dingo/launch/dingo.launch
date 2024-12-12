@@ -5,10 +5,10 @@
     <arg name="use_keyboard" default="1"/>
     <arg name="serial_port" default="/dev/ttyS0"/>
     <arg name="use_imu" default="0"/>
-    <arg name="use_auto" default="0"/>
+    <arg name="use_slam" default="0"/>
 
-    <env name="ROS_MASTER_URI" value="http://172.31.214.160:11311"/>
-    <env name="ROS_IP" value="172.31.214.160"/>
+    <env name="ROS_MASTER_URI" value="http://172.16.26.180:11311"/>
+    <env name="ROS_IP" value="172.16.26.180"/>
 
     <group if="$(arg is_physical)">
         <!-- Communication Node between Arduino and Pi -->
@@ -33,10 +33,8 @@
         <node pkg = "dingo_input_interfacing" type = "Keyboard.py" name = "keyboard_input_listener" output="screen"></node>
     </group>
 
-    <group if="$(arg use_auto)">
+    <group if="$(arg use_slam)">
         <include file="$(find hector_slam_launch)/launch/tutorial.launch"/>
-        <!-- <node pkg = "dingo_input_interfacing" type = "NickAutoMove.py" name = "auto_input_listener" output="screen"></node> -->
-        <!-- <include file="$(find rplidar_ros)/launch/rplidar_a1.launch"/> -->
     </group>
     
     <!-- Dingo Driver -->
