@@ -4,14 +4,16 @@ from enum import Enum
 
 class State:
     def __init__(self):
-        self.horizontal_velocity = np.array([0.0, 0.0])
+        self.horizontal_velocity = np.array([0.0, 0.0]) # target velocity
         self.yaw_rate = 0.0
         self.height = -0.20
         self.pitch = 0.0
         self.roll = 0.0
         self.joystick_control_active = 1
         self.behavior_state = BehaviorState.REST
-        self.euler_orientation = [0,0,0]
+        self.euler_orientation = [0,0,0] #angles
+        self.euler_momentum = [0,0,0] #anglular momentum - Ethan
+        self.accelerations = [0,0,0] #acceleration -Ethan
         self.ticks = 0
         self.foot_locations = np.zeros((3, 4))
         self.rotated_foot_locations = np.zeros((3, 4))
@@ -28,3 +30,4 @@ class BehaviorState(Enum):
     TROT = 1
     HOP = 2
     FINISHHOP = 3
+    GALLOP = 4

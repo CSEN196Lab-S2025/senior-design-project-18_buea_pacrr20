@@ -6,6 +6,7 @@
     <arg name="serial_port" default="/dev/ttyS0"/>
     <arg name="use_imu" default="0"/>
     <arg name="use_slam" default="0"/>
+    <arg name="use_zed" default="1"/>
 
     <env name="ROS_MASTER_URI" value="http://192.168.0.165:11311"/>
     <env name="ROS_IP" value="192.168.0.165"/>
@@ -35,6 +36,18 @@
 
     <group if="$(arg use_slam)">
         <include file="$(find hector_slam_launch)/launch/tutorial.launch"/>
+    </group>
+
+    <group if="$(arg use_zed)">
+        <launch>
+            <!-- Include ZED Mini launch file -->
+            <include file="$(find zed_wrapper)/launch/zedm.launch">
+                <arg name="camera_name" value="zedm"/>
+                <arg name="camera_model" value="zedm"/>
+                <arg name="publish_urdf" value="true"/>
+                <arg name="base_frame" value="base_link"/>
+            </include>
+        </launch>
     </group>
     
     <!-- Dingo Driver -->

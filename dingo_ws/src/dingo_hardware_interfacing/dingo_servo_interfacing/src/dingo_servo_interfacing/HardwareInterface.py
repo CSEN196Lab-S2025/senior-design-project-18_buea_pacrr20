@@ -3,6 +3,7 @@ from adafruit_servokit import ServoKit
 import numpy as np
 import math as m
 import rospy
+import time
 
 class HardwareInterface():
     def __init__(self,link):
@@ -58,9 +59,9 @@ class HardwareInterface():
                     #  [[65, 109, 119, 79],
                     #  [ 13,   3,  5, 24],
                     #  [ 0,   0,  0,  0]])
-                    [[65, 109, 115, 79],
-                     [ 8,   3,  8, 19],
-                     [ 0,   0,  0,  0]])
+                    [[70, 110, 120, 80],
+                     [10,   5,  0, 0],
+                     [ 10,   10,  0,  10]])
         #applying calibration values to all servos
         self.create()
 
@@ -89,17 +90,26 @@ class HardwareInterface():
 
         # print('Final angles for actuation: ',self.servo_angles)    
         for leg_index in range(4):
+            time.sleep(0.002)
             for axis_index in range(3):
+                
                 if(leg_index < 2):
-                    try:
-                        self.kitF.servo[self.pins[axis_index,leg_index]].angle = self.servo_angles[axis_index,leg_index]
-                    except:
-                        rospy.logwarn("Warning - I2C IO error")                
+                    while True:
+                        try:
+                            self.kitF.servo[self.pins[axis_index,leg_index]].angle = self.servo_angles[axis_index,leg_index]
+                            break
+                        except:
+                            time.sleep(0.001)
+                            #rospy.logwarn("Warning - I2C IO error")                
                 else:
-                    try:
-                        self.kitB.servo[self.pins[axis_index,leg_index]].angle = self.servo_angles[axis_index,leg_index]
-                    except:
-                        rospy.logwarn("Warning - I2C IO error")           
+                    while True:
+                        try:
+                            
+                            self.kitB.servo[self.pins[axis_index,leg_index]].angle = self.servo_angles[axis_index,leg_index]
+                            break
+                        except:
+                            time.sleep(0.001)
+                            #rospy.logwarn("Warning - I2C IO error")           
 
 ## HERE ##
 

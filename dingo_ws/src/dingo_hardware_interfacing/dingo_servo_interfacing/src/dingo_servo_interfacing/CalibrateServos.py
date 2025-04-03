@@ -115,9 +115,9 @@ offsets = np.array(
                     # [[70, 107, 115, 64],
                     # [35, 10, 15, 22],
                     # [16, 27, 35, 14]])
-                    [[64, 106, 115, 77],
-                     [ 15,   -5,  11, 19],
-                     [ 2,   -5,  -8,  -6]])
+                    [[70, 110, 120, 80],
+                     [10,   5,  0, 0],
+                     [ 10,   10,  0,  10]])
 
 
 servo_name = ""
@@ -128,38 +128,50 @@ if len(sys.argv) > 1 and sys.argv[1] in servo_dict:
         print('DINGO: Motor ' + servo_name + ' moved to ' + servo_move + '.\n')
     else:
         print('DINGO: Motors Relaxed.\n')
-dt = 0.005
+dt = 0.01
 if servo_name == "br" or servo_name == "all":
-    Dingo.moveAbsAngle(Dingo.back_right_hip   ,offsets[0,2]+pos[0])
-    #time.sleep(dt)
-    Dingo.moveAbsAngle(Dingo.back_right_upper ,offsets[1,2]+pos[1])
-    #time.sleep(dt)
-    Dingo.moveAbsAngle(Dingo.back_right_lower ,offsets[2,2]+pos[2])
-    time.sleep(dt)
+    try:
+        Dingo.moveAbsAngle(Dingo.back_right_hip   ,(offsets[0,2]+pos[0]))
+        #time.sleep(dt)
+        Dingo.moveAbsAngle(Dingo.back_right_upper ,offsets[1,2]+pos[1])
+        #time.sleep(dt)
+        Dingo.moveAbsAngle(Dingo.back_right_lower ,offsets[2,2]+pos[2])
+        #time.sleep(dt)
+    except:
+        print("backright error")
 
 if servo_name == "bl" or servo_name == "all":
-    Dingo.moveAbsAngle(Dingo.back_left_hip    ,offsets[0,3]+pos[0])
-    #time.sleep(dt)
-    Dingo.moveAbsAngle(Dingo.back_left_upper  ,offsets[1,3]+pos[1])
-    #time.sleep(dt)
-    Dingo.moveAbsAngle(Dingo.back_left_lower  ,offsets[2,3]+pos[2])
-    time.sleep(dt)
+    try:
+        Dingo.moveAbsAngle(Dingo.back_left_hip    ,offsets[0,3]+pos[0])
+        #time.sleep(dt)
+        Dingo.moveAbsAngle(Dingo.back_left_upper  ,offsets[1,3]+pos[1])
+        #time.sleep(dt)
+        Dingo.moveAbsAngle(Dingo.back_left_lower  ,offsets[2,3]+pos[2])
+        #time.sleep(dt)
+    except:
+        print("backleft error")
 
 if servo_name == "fr" or servo_name == "all":
-    Dingo.moveAbsAngle(Dingo.front_right_hip  ,offsets[0,0]+pos[0])
-    #time.sleep(dt)
-    Dingo.moveAbsAngle(Dingo.front_right_upper,offsets[1,0]+pos[1])
-    #time.sleep(dt)
-    Dingo.moveAbsAngle(Dingo.front_right_lower,offsets[2,0]+pos[2])
-    time.sleep(dt)
+    try:
+        Dingo.moveAbsAngle(Dingo.front_right_hip  ,offsets[0,0]+pos[0])
+        #time.sleep(dt)
+        Dingo.moveAbsAngle(Dingo.front_right_upper,offsets[1,0]+pos[1])
+        #time.sleep(dt)
+        Dingo.moveAbsAngle(Dingo.front_right_lower,offsets[2,0]+pos[2])
+        #time.sleep(dt)
+    except:
+        print("frontright error")
 
 if servo_name == "fl" or servo_name == "all":
-    Dingo.moveAbsAngle(Dingo.front_left_hip   ,offsets[0,1]+pos[0])
-    #time.sleep(dt)
-    Dingo.moveAbsAngle(Dingo.front_left_upper ,offsets[1,1]+pos[1])
-    #time.sleep(dt)
-    Dingo.moveAbsAngle(Dingo.front_left_lower ,offsets[2,1]+pos[2])
-    time.sleep(dt)
+    try:
+        Dingo.moveAbsAngle(Dingo.front_left_hip   ,offsets[0,1]+pos[0])
+        #time.sleep(dt)
+        Dingo.moveAbsAngle(Dingo.front_left_upper ,offsets[1,1]+pos[1])
+        #time.sleep(dt)
+        Dingo.moveAbsAngle(Dingo.front_left_lower ,offsets[2,1]+pos[2])
+        #time.sleep(dt)
+    except:
+        print("frontleft error")
 
 
 if servo_name == "relax":

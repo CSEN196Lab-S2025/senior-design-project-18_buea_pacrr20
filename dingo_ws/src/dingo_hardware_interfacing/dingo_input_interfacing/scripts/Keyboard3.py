@@ -8,7 +8,7 @@ import numpy as np
 from sshkeyboard import listen_keyboard, stop_listening
 from dingo_servo_interfacing import HardwareInterface
 from dingo_servo_interfacing.ServoCalibrationDefinition import motor_config
-
+from sensor_msgs.msg import Imu # Added this in -Ethan
 
 
 class Keyboard:
@@ -16,6 +16,9 @@ class Keyboard:
         self.used_keys = ['w', 'a', 's', 'd', '1', '2', '7', '8', '9', '0', "backspace", "up", "down", "left", "right", "space"]
         self.speed_multiplier = 1
         self.joystick_message_pub = rospy.Publisher("joy", Joy, queue_size=10)
+
+        self.odom_message = rospy.Subscriber("/wit/imu", Imu) # Added this as well
+        self.linear_accelerations = [self.odom_message.linear_acceleration.x,self.odom_message.linear_acceleration.y,self.odom_message.linear_acceleration.z] # Potential Line
 
         self.current_joy_message = Joy()
         self.current_joy_message.axes = [0., 0., 0., 0., 0., 0., 0., 0.]

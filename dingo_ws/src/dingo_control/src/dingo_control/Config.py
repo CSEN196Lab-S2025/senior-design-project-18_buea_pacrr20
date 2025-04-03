@@ -13,8 +13,8 @@ class Configuration:
         self.ps4_deactivated_color = PS4_DEACTIVATED_COLOR    
 
         #################### COMMANDS ####################
-        self.max_x_velocity = 1.2
-        self.max_y_velocity = 0.5
+        self.max_x_velocity = 1.8
+        self.max_y_velocity = 0.7
         self.max_yaw_rate = 2.0
         self.max_pitch = 30.0 * np.pi / 180.0
         
@@ -42,7 +42,7 @@ class Configuration:
 
         #################### SWING ######################
         self.z_coeffs = None
-        self.z_clearance = 0.07
+        self.z_clearance = 0.04
         self.alpha = (
             0.5  # Ratio between touchdown distance and total horizontal stance movement
         )
@@ -53,8 +53,10 @@ class Configuration:
         #################### GAIT #######################
         self.dt = 0.01
         self.num_phases = 4
+        #
+        #self.contact_phases = np.array( [[1, 1, 1, 0], [1, 0, 1, 1], [1, 0, 1, 1], [1, 1, 1, 0]])
         self.contact_phases = np.array(
-            [[1, 1, 1, 0], [1, 0, 1, 1], [1, 0, 1, 1], [1, 1, 1, 0]]
+            [[0,1,1,1],[1,0,1,1],[1,1,0,1],[1,1,1,0]]
         )
         self.overlap_time = (
             0.04  # duration of the phase where all four feet are on the ground
@@ -83,7 +85,7 @@ class Configuration:
         ################### INERTIAL ####################
         self.FRAME_MASS = 0.560  # kg
         self.MODULE_MASS = 0.080  # kg
-        self.LEG_MASS = 0.030  # kg
+        self.LEG_MASS = 0.130  # kg
         self.MASS = self.FRAME_MASS + (self.MODULE_MASS + self.LEG_MASS) * 4
 
         # Compensation factor of 3 because the inertia measurement was just

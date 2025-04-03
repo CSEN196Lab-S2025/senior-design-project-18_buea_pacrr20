@@ -38,31 +38,36 @@ def handleSerialData(raw_data):
         return
     else:
         data_buff = list(buff.values())  # Get dictionary ownership value
+        #print("Parsed data:", data_buff)  # Debug: Print parsed data
         if buff[1] == 0x51 :
             if checkSum(data_buff[0:10], data_buff[10]):
                 acceleration = [hex_to_short(data_buff[2:10])[i] / 32768.0 * 16 * 9.8 for i in range(0, 3)]
+                #print("Acceleration:", acceleration)  # Debug: Acceleration
             else:
                 print('0x51 Check failure')
 
         elif buff[1] == 0x52:
             if checkSum(data_buff[0:10], data_buff[10]):
                 angularVelocity = [hex_to_short(data_buff[2:10])[i] / 32768.0 * 2000 * math.pi / 180 for i in range(0, 3)]
-
+                #print("Angular Velocity:", angularVelocity)  # Debug: Angular velocity
             else:
                 print('0x52 Check failure')
 
         elif buff[1] == 0x53:
             if checkSum(data_buff[0:10], data_buff[10]):
                 angle_degree = [hex_to_short(data_buff[2:10])[i] / 32768.0 * 180 for i in range(0, 3)]
+                #print("Angle (Degrees):", angle_degree)  # Debug: Angles
                 angle_flag = True
             else:
                 print('0x53 Check failure')
         elif buff[1] == 0x54:
             if checkSum(data_buff[0:10], data_buff[10]):
                 magnetometer = hex_to_short(data_buff[2:10])
+                #print("Magnetometer: ", magnetometer)  # Debug: Angles
             else:
                 print('0x54 Check failure')
         else:
+            #print("Unknown data type:", buff[1])
             buff = {}
             key = 0
 
@@ -96,9 +101,13 @@ def handleSerialData(raw_data):
             mag_msg.magnetic_field.x = magnetometer[0]
             mag_msg.magnetic_field.y = magnetometer[1]
             mag_msg.magnetic_field.z = magnetometer[2]
-
-            imu_pub.publish(imu_msg)
+            try:
+                imu_pub.publish(imu_msg)
+            except:
+                print("what is wrong with you")
+            #rospy.loginfo("Published IMU data: %s", imu_msg)
             mag_pub.publish(mag_msg)
+            rate.sleep()
 
 
 key = 0
@@ -113,14 +122,14 @@ angle_degree = [0, 0, 0]
 if __name__ == "__main__":
     python_version = platform.python_version()[0]
 
-    rospy.init_node("imu")
+    rospy.init_node("imu", anonymous=True)
     port = rospy.get_param("~port", "/dev/ttyUSB0")
     baudrate = rospy.get_param("~baud", 9600)
     print("IMU Type: Normal Port:%s baud:%d" %(port,baudrate))
     imu_msg = Imu()
     mag_msg = MagneticField()
     try:
-        wt_imu = serial.Serial(port=port, baudrate=baudrate, timeout=0.5)
+        wt_imu = serial.Serial(port=port, baudrate=baudrate, timeout=1)
         if wt_imu.isOpen():
             rospy.loginfo("\033[32mSerial port opened successfully...\033[0m")
         else:
@@ -131,8 +140,9 @@ if __name__ == "__main__":
         rospy.loginfo("\033[31mSerial port opening failure\033[0m")
         exit(0)
     else:
-        imu_pub = rospy.Publisher("wit/imu", Imu, queue_size=10)
-        mag_pub = rospy.Publisher("wit/mag", MagneticField, queue_size=10)
+        imu_pub = rospy.Publisher("/wit/imu", Imu, queue_size=100)
+        mag_pub = rospy.Publisher("/wit/mag", MagneticField, queue_size=100)
+        rate = rospy.Rate(10)  # 10 Hz
 
         while not rospy.is_shutdown():
             try:
@@ -144,6 +154,6 @@ if __name__ == "__main__":
             else:
                 if buff_count > 0:
                     buff_data = wt_imu.read(buff_count)
+                    #print("buff data: ", buff_data)
                     for i in range(0, buff_count):
                         handleSerialData(buff_data[i])
-

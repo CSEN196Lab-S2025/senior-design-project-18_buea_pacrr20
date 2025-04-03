@@ -25,12 +25,14 @@ class SwingController:
         return R @ self.config.default_stance[:, leg_index] + delta_p
 
 
-    def swing_height(self, swing_phase, triangular=True):
+    def swing_height(self, swing_phase, triangular=False):
         if triangular:
             if swing_phase < 0.5:
                 swing_height_ = swing_phase / 0.5 * self.config.z_clearance
             else:
                 swing_height_ = self.config.z_clearance * (1 - (swing_phase - 0.5) / 0.5)
+        else: 
+            swing_height_ = self.config.z_clearance *4 * swing_phase * (1-swing_phase) #Added parabolic swing -Ethan
         return swing_height_
 
 

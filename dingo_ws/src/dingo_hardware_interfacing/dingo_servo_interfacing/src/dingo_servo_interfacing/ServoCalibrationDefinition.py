@@ -3,11 +3,11 @@ from adafruit_servokit import ServoKit
 # from leg_config import *
 import numpy as np
 import math as m
-
+import time
 
 class motor_config():
     def __init__(self):
-        self.pwm_max = 2400
+        self.pwm_max = 2400 #1x time speed
         self.pwm_min = 370
         self.kitF = ServoKit(channels=16) #Defining a new set of servos uising the Adafruit ServoKit LIbrary
         self.kitB = ServoKit(channels=16, address=0x41) #Defininng a new set of servos uising the Adafruit ServoKit LIbrary
@@ -61,6 +61,7 @@ class motor_config():
         for i in range(16):
             self.kitF.servo[i].actuation_range = 180
             self.kitF.servo[i].set_pulse_width_range(self.pwm_min, self.pwm_max)
+            
             self.kitB.servo[i].actuation_range = 180
             self.kitB.servo[i].set_pulse_width_range(self.pwm_min, self.pwm_max)
     def calibrate_servo(self,servo_number):
@@ -82,19 +83,28 @@ class motor_config():
         # Takes 180-angle so that the movement it the same as the right lef
         if servo_number in self.left_leg_servos_list:
             self.kitF.servo[servo_number].angle = 180 - angle
+            time.sleep(0.03)
             self.kitB.servo[servo_number].angle = 180 - angle
+            time.sleep(0.03)
             #print("1")
         elif servo_number in self.hip_opposite_list: #corrects hip angle such that higher numbers are angles of elevation. Higher hip values fo all lift up
             self.kitF.servo[servo_number].angle = 180-angle
+            time.sleep(0.03)
+            
             self.kitB.servo[servo_number].angle = 180-angle
+            time.sleep(0.03)
             #print("2")
         elif servo_number in self.hip_opposite_list2:
             self.kitF.servo[servo_number].angle = angle
+            time.sleep(0.03)
             self.kitB.servo[servo_number].angle = angle
+            time.sleep(0.03)
             #print("3")
         else:
             self.kitF.servo[servo_number].angle = angle
+            time.sleep(0.03)
             self.kitB.servo[servo_number].angle = angle
+            time.sleep(0.03)
             #print("4")
     def relax_all_motors(self):
         """Relaxes desired servos so that they appear to be turned off. 

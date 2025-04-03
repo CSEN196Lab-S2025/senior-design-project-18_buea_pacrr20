@@ -103,7 +103,7 @@ class Controller:
         """
 
         previous_state = state.behavior_state
-
+        dyaw = state.euler_orientation[0]
         ########## Update operating state based on command ######
         if command.joystick_control_event:
             state.behavior_state = self.activate_transition_mapping[state.behavior_state]
@@ -179,6 +179,41 @@ class Controller:
             )
             state.rotated_foot_locations = rotated_foot_locations
 
+        
+        elif state.behavior_state == BehaviorState.GALLOP:
+            state.foot_locations, contact_modes = self.step_gait(
+                state,
+                command,
+            )
+
+            # Apply the desired body rotation
+            rotated_foot_locations = (
+                euler2mat(
+                    command.roll, command.pitch, 0.0
+                )
+                @ state.foot_locations
+            )
+
+            # Construct foot rotation matrix to compensate for body tilt
+            yaw,pitch,roll = state.euler_orientation
+            #print('Yaw: ',np.round(yaw),'Pitch: ',np.round(pitch),'Roll: ',np.round(roll))
+            correction_factor = 0.8
+            max_tilt = 0.4
+            roll_compensation = correction_factor * np.clip(roll, -max_tilt, max_tilt)
+            pitch_compensation = correction_factor * np.clip(pitch, -max_tilt, max_tilt)
+            rmat = euler2mat(roll_compensation, pitch_compensation, 0)
+
+            rotated_foot_locations = rmat.T @ rotated_foot_locations
+
+            state.joint_angles = self.inverse_kinematics(
+                rotated_foot_locations, self.config
+            )
+            state.rotated_foot_locations = rotated_foot_locations
+
+
+
+
+
         state.ticks += 1
         state.pitch = command.pitch
         state.roll = command.roll
@@ -195,7 +230,7 @@ class Controller:
         )
         return state.joint_angles
     def stabilise_with_IMU(self,foot_locations,orientation):
-        ''' Applies euler orientatin data of pitch roall and yaw to stabilise hte robt. Current only applying to pitch.'''
+        ''' Applies euler orientatin data of pitch roall and yaw to stabilise the robot. Current only applying to pitch.'''
         yaw,pitch,roll = orientation
         # print('Yaw: ',np.round(np.degrees(yaw)),'Pitch: ',np.round(np.degrees(pitch)),'Roll: ',np.round(np.degrees(roll)))
         correction_factor = 0.05

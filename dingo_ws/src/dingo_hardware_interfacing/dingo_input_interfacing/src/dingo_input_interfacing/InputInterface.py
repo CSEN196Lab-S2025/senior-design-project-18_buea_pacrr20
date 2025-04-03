@@ -32,7 +32,7 @@ class InputInterface:
         gait_toggle = msg.buttons[5] #R1
         if self.trot_event != 1:
             self.trot_event = (gait_toggle == 1 and self.previous_gait_toggle == 0)
-
+        print(self.trot_event, " : ",  gait_toggle, " : ", self.previous_gait_toggle, " : ", msg.buttons[5])
         # Check if requesting a state transition to hopping, from trotting or resting
         hop_toggle = msg.buttons[0] #x
         if self.hop_event != 1:
